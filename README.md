@@ -9,7 +9,7 @@ npm i
 
 CLIENT_ID=7631725 CLIENT_SECRET=vU5DD40ZBSCf3ZkQXEVB PORT=9090 node index
 ```
-Где CLIENT_ID - ID пртложения CLIENT_SECRET - секрет приложения
+Где CLIENT_ID - ID приложения CLIENT_SECRET - секрет приложения
 
 ## Как использовать
 В VK нужно добавить ссылку Адрес сайта http://example.com:9090
