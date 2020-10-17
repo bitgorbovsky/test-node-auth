@@ -5,6 +5,7 @@ const axios = require("axios");
 const PORT = process.env.PORT || 9090;
 const CLIENT_SECRET = process.env.CLIENT_SECRET;
 const CLIENT_ID = process.env.CLIENT_ID;
+const HOST = process.env.HOST;
 
 const tempIdTimeout = 30 * 1000 * 60; // 30 min
 const memoryStore = {};
@@ -16,7 +17,7 @@ app.get("/vk", async (req, res) => {
 
     try {
         const response = await axios.get(
-            `https://oauth.vk.com/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&redirect_uri=http://localhost:9090/vk&code=${code}`
+            `https://oauth.vk.com/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&redirect_uri=http://${HOST}:9090/vk&code=${code}`
         );
         memoryStore[state] = response.data;
     } catch (error) {
