@@ -3,8 +3,8 @@
 
 ## Как запустить
 ```
-git clone luchanso
-cd server-for-igor
+git clone git@github.com:Luchanso/test-node-auth.git
+cd test-node-auth
 npm i
 
 CLIENT_ID=7631725 CLIENT_SECRET=vU5DD40ZBSCf3ZkQXEVB PORT=9090 node index
