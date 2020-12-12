@@ -30,6 +30,7 @@ app.get("/vk", async (req, res) => {
     try {
         const response = await axios({
             baseUrl: VK_OAUTH_URL,
+            url: '/access_token',
             method: 'get',
             params: {
                 client_id: cfg.VK_CLIENT_ID,
