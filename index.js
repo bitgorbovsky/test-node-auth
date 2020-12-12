@@ -1,41 +1,68 @@
+/*
+ * OAuth2 for third party social networks
+ */
+
+// System modules
+
+/* no system modules */
+
+// Third-party libs
 const express = require("express");
-const app = express();
 const axios = require("axios");
 
-const PORT = process.env.PORT || 9090;
-const CLIENT_SECRET = process.env.CLIENT_SECRET;
-const CLIENT_ID = process.env.CLIENT_ID;
-const HOST = process.env.HOST;
+// Local modules
+const cfg = require('./config');
 
-const tempIdTimeout = 30 * 1000 * 60; // 30 min
-const memoryStore = {};
 
+// Locals
+const auth_storage = {};
+const VK_OAUTH_URL = 'https://oauth.vk.com/'
+
+
+// HTTP handlers
+const app = express();
+
+/* === vk oauth2 handler === */
 app.get("/vk", async (req, res) => {
-    console.log("-".repeat(100));
     const { code, state } = req.query;
-    console.log(`Get access_token by code ${code} for`, state);
+    console.log(`get access_token by code ${code} for`, state);
 
     try {
-        const response = await axios.get(
-            `https://oauth.vk.com/access_token?client_id=${CLIENT_ID}&client_secret=${CLIENT_SECRET}&redirect_uri=http://${HOST}:9090/vk&code=${code}`
-        );
-        memoryStore[state] = response.data;
+        const response = await axios({
+            baseUrl: VK_OAUTH_URL,
+            method: 'get',
+            params: {
+                client_id: cfg.VK_CLIENT_ID,
+                client_secret: cfg.VK_CLIENT_SECRET,
+                redirect_uri: `http://${cfg.HOST}:${cfg.PORT}/vk`,
+                code: code
+            }
+        });
+        auth_storage[state] = response.data;
+        return res.status(200).json({ message: 'authorized' });
     } catch (error) {
-        console.log(error.response.data);
+        res.status(500).json({
+            message: 'auth error',
+            content: error.response.data
+        });
     }
-
-    res.send("Вы успешно авторизованы!");
 });
 
-app.get("/get-auth", (req, res) => {
-    console.log("/get-auth", req.query);
+app.get("/vk/get-auth", (req, res) => {
+    console.log("/vk/get-auth: ", req.query.state);
 
-    res.send(memoryStore[req.query.state] || { error: "not found", code: 404 });
+    let data = auth_storage[req.query.state];
+    if (!data) {
+        return res.status(404).json({
+            'message': 'auth data not found for this state'
+        })
+    }
+    res.json(data);
 });
+/* === end of vk oauth2 handler === */
 
-app.listen(PORT, () => {
-    console.log(`Server for igor runned on ${PORT}`);
+
+// Initialization section
+app.listen(cfg.PORT, () => {
+    console.log(`content-cleaner backend runned on ${cfg.PORT}`);
 });
-
-// CLIENT_ID=7631764 CLIENT_SECRET=ltBTW8u4ozvXx5hXxRc1 PORT=9090 node index
-// https://oauth.vk.com/authorize?client_id=7631764&redirect_uri=http://localhost:9090/vk&scope=audio&response_type=code&v=5.52&state=123

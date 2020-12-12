@@ -1,5 +1,5 @@
 {
-  "name": "server-for-igor",
+  "name": "content-cleaner-backend",
   "version": "1.0.0",
   "main": "index.js",
   "author": "Oleg Loutchansky <luchansodev@gmail.com>",
@@ -9,6 +9,7 @@
     "request": "^2.88.2"
   },
   "devDependencies": {
-    "@types/axios": "^0.14.0"
+    "@types/axios": "^0.14.0",
+    "eslint": "^7.15.0"
   }
 }
